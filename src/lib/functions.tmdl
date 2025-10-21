@@ -1,4 +1,6 @@
-function 'DaxLib.FormatString.RelativeToTarget.Percents' = ```
+/// Dynamic format string generator for comparison values (in percent)
+/// Returns format string with directional indicators based on parameters
+function 'DaxLib.FormatString.RelativeToTarget.Percents' = 
 
 		// Dynamic format string generator for comparison values (in percent)
 		// Returns format string with directional indicators based on parameters
@@ -40,7 +42,7 @@ function 'DaxLib.FormatString.RelativeToTarget.Percents' = ```
 		)
 		=>
 		    VAR _BaseFormat =
-		        DaxLib.FormatString.Component.DecimalPlaces( "#,##0", decimal_places )
+		        DaxLib.FormatString.Component.DecimalPlaces( "#,##0", decimal_places ) & "%"
 
 		    VAR _Prefix =
 		        DaxLib.FormatString.Component.MakeStringSafe ( custom_prefix )
@@ -85,20 +87,18 @@ function 'DaxLib.FormatString.RelativeToTarget.Percents' = ```
 
 		    RETURN
 		        _PositiveFormat & ";" & _NegativeFormat & ";" & _ZeroFormat
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.HHMMSS.Seconds' = ```
+/// Convert duration in seconds to HH:MM:SS format string
+function 'DaxLib.FormatString.HHMMSS.Seconds' = 
 
 		// Convert duration in seconds to HH:MM:SS format string
-		(
-		    // Duration in seconds
-		    seconds: NUMERIC
-		) =>
-		    VAR _TotalSeconds = seconds
+		// To be used on a measure that returns a value in seconds
+		() =>
+		    VAR _TotalSeconds = SELECTEDMEASURE ()
 
 		    VAR _Hours =
 		        INT( _TotalSeconds / 3600 )
@@ -110,19 +110,21 @@ function 'DaxLib.FormatString.HHMMSS.Seconds' = ```
 		        INT( MOD( _TotalSeconds, 60 ) )
 
 		    VAR _Result =
-		        FORMAT( _Hours, "00" ) & ":" &
-		        FORMAT( _Minutes, "00" ) & ":" &
-		        FORMAT( _Seconds, "00" )
+		        DaxLib.FormatString.Component.MakeStringSafe(
+		            FORMAT ( _Hours, "00" ) & ":" &
+		            FORMAT ( _Minutes, "00" ) & ":" &
+		            FORMAT ( _Seconds, "00" )
+		        )
 
 		    RETURN
 		        _Result
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.HHMMSS.StartTimeEndTime' = ```
+/// Convert duration between start and end times to HH:MM:SS format string
+function 'DaxLib.FormatString.HHMMSS.StartTimeEndTime' = 
 
 		// Convert duration between start and end times to HH:MM:SS format string
 		(
@@ -147,19 +149,22 @@ function 'DaxLib.FormatString.HHMMSS.StartTimeEndTime' = ```
 		        INT( MOD( _DurationInSeconds, 60 ) )
 
 		    VAR _Result =
-		        FORMAT( _Hours, "00" ) & ":" &
-		        FORMAT( _Minutes, "00" ) & ":" &
-		        FORMAT( _Seconds, "00" )
+		        DaxLib.FormatString.Component.MakeStringSafe(
+		            FORMAT ( _Hours, "00" ) & ":" &
+		            FORMAT ( _Minutes, "00" ) & ":" &
+		            FORMAT ( _Seconds, "00" )
+		        )
 
 		    RETURN
 		        _Result
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.DynamicUnits' = ```
+/// Dynamic format string with automatic K/M/bn/tn suffix, rounding, and decimal places based on value magnitude
+/// Supports dynamic currency conversion
+function 'DaxLib.FormatString.DynamicUnits' = 
 
 		// Dynamic format string with automatic K/M/bn/tn suffix, rounding, and decimal places based on value magnitude
 		// Supports dynamic currency conversion
@@ -214,13 +219,14 @@ function 'DaxLib.FormatString.DynamicUnits' = ```
 
 		    RETURN
 		        _FormatString
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.Symbols' = ```
+/// Get comparison symbol based on style and value sign
+/// Returns appropriate symbol for positive, negative, or zero values
+function 'DaxLib.FormatString.Component.Symbols' = 
 
 		// Get comparison symbol based on style and value sign
 		// Returns appropriate symbol for positive, negative, or zero values
@@ -291,13 +297,13 @@ function 'DaxLib.FormatString.Component.Symbols' = ```
 
 		    RETURN
 		        _Symbol
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.DecimalPlaces' = ```
+/// Returns a 0 string repeated a number of times equal to the number of decimal places
+function 'DaxLib.FormatString.Component.DecimalPlaces' = 
 
 		// Returns a 0 string repeated a number of times equal to the number of decimal places
 		(
@@ -318,12 +324,12 @@ function 'DaxLib.FormatString.Component.DecimalPlaces' = ```
 		            & REPT ( "0", MIN ( decimal_places, 9 ) ),
 		        ""
 		    )
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
+/// Wraps strings in double-quotes to avoid issues with format string interpretation
 function 'DaxLib.FormatString.Component.MakeStringSafe' = 
 
 		// Wraps strings in double-quotes to avoid issues with format string interpretation
@@ -336,9 +342,11 @@ function 'DaxLib.FormatString.Component.MakeStringSafe' =
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.DynamicCurrency' = ```
+/// Get currency format string based on currency code
+/// Returns appropriate number format with currency symbol placement
+function 'DaxLib.FormatString.DynamicCurrency' = 
 
 		// Get currency format string based on currency code
 		// Returns appropriate number format with currency symbol placement
@@ -373,13 +381,14 @@ function 'DaxLib.FormatString.DynamicCurrency' = ```
 
 		    RETURN
 		        _Format
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.GetCurrencySymbol' = ```
+/// Get currency symbol based on currency code
+/// Returns currency symbol as a string (e.g., "$" or "€")
+function 'DaxLib.FormatString.Component.GetCurrencySymbol' = 
 
 		// Get currency symbol based on currency code
 		// Returns currency symbol as a string (e.g., "$" or "€")
@@ -405,13 +414,14 @@ function 'DaxLib.FormatString.Component.GetCurrencySymbol' = ```
 
 		    RETURN
 		        _Symbol
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.GetCurrencyPosition' = ```
+/// Get currency position based on currency code
+/// Returns either "PREFIX" or "SUFFIX"
+function 'DaxLib.FormatString.Component.GetCurrencyPosition' = 
 
 		// Get currency position based on currency code
 		// Returns either "PREFIX" or "SUFFIX"
@@ -437,19 +447,19 @@ function 'DaxLib.FormatString.Component.GetCurrencyPosition' = ```
 
 		    RETURN
 		        _Position
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.DynamicUnits' = ```
+/// Helper function to dynamically round and format values
+function 'DaxLib.FormatString.Component.DynamicUnits' = 
 
 		// Helper function to dynamically round and format values
 		(
 		    // Base format string
-		    // Expects a valid format string base, i.e. "#,##0"
 		    base_format: STRING,
+		    // Expects a valid format string base, i.e. "#,##0"
 
 		    // The value to format
 		    // EXPR because it must be able to handle SELECTEDMEASURE() and arbitrary expressions
@@ -470,22 +480,23 @@ function 'DaxLib.FormatString.Component.DynamicUnits' = ```
 		            _CurrentValue <= 1E7, ",,.00 M",
 		            _CurrentValue <= 1E8, ",,.0 M",
 		            _CurrentValue <= 1E9, ",,. M",
-		            _CurrentValue <= 1E10, ",,.00 bn",
-		            _CurrentValue <= 1E11, ",,.0 bn",
-		            _CurrentValue <= 1E12, ",,. bn",
-		            _CurrentValue <= 1E13, ",,.00 tn",
-		            _CurrentValue <= 1E14, ",,.0 tn",
-		            _CurrentValue <= 1E15, ",,. tn"
+		            _CurrentValue <= 1E10, ",,,.00 bn",
+		            _CurrentValue <= 1E11, ",,,.0 bn",
+		            _CurrentValue <= 1E12, ",,,,. bn",
+		            _CurrentValue <= 1E13, ",,,,.00 tn",
+		            _CurrentValue <= 1E14, ",,,,,.0 tn",
+		            _CurrentValue <= 1E15, ",,,,,. tn"
 		        )
 		    RETURN
 		        _Format
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.RelativeToTarget.Numeric' = ```
+/// Dynamic format string generator for comparison values (in value)
+/// Returns format string with directional indicators based on parameters
+function 'DaxLib.FormatString.RelativeToTarget.Numeric' = 
 
 		// Dynamic format string generator for comparison values (in value)
 		// Returns format string with directional indicators based on parameters
@@ -571,13 +582,14 @@ function 'DaxLib.FormatString.RelativeToTarget.Numeric' = ```
 		        _PositiveFormat & ";" & _NegativeFormat
 		            & ";"
 		            & _ZeroFormat
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.CurrencyTable' = ```
+/// Get currency reference table with codes, symbols, position, and format strings
+/// Returns table with currency metadata for use in other calculations
+function 'DaxLib.FormatString.Component.CurrencyTable' = 
 
 		// Get currency reference table with codes, symbols, position, and format strings
 		// Returns table with currency metadata for use in other calculations
@@ -693,13 +705,14 @@ function 'DaxLib.FormatString.Component.CurrencyTable' = ```
 
 		    RETURN
 		        _CurrencyTable
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.GetCurrencyFormat' = ```
+/// Get currency format based on currency code
+/// Returns simple currency format string (i.e. $#,##0.0)
+function 'DaxLib.FormatString.Component.GetCurrencyFormat' = 
 
 		// Get currency format based on currency code
 		// Returns simple currency format string (i.e. $#,##0.0)
@@ -725,13 +738,14 @@ function 'DaxLib.FormatString.Component.GetCurrencyFormat' = ```
 
 		    RETURN
 		        _Symbol
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Component.GetCurrencyFormat.PNZ' = ```
+/// Get currency format based on currency code
+/// Returns positive; negative; zero format string (i.e. $#,##0.0; ($-#,##0.0); $0)
+function 'DaxLib.FormatString.Component.GetCurrencyFormat.PNZ' = 
 
 		// Get currency format based on currency code
 		// Returns positive; negative; zero format string (i.e. $#,##0.0; ($-#,##0.0); $0)
@@ -757,195 +771,207 @@ function 'DaxLib.FormatString.Component.GetCurrencyFormat.PNZ' = ```
 
 		    RETURN
 		        _Symbol
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Basic.Dates' = ```
+/// Simple function to centralize date formats in a model
+/// Main benefit is that if you want to change it, you only have to do it in one place
+///
+/// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every Date field.
+function 'DaxLib.FormatString.Basic.Dates' = 
 
 		// Simple function to centralize date formats in a model.
 		// Main benefit is that if you want to change it, you only have to do it in one place.
 		//
 		// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every Date field.
-		(
-		)
-		=>
+		() =>
 		    // Replace with one of the other, commented options, below.
 
 		    -- e.g. 2025-12-25 (ISO 8601 - International Standard)
-		    "YYYY-MM-DD"
+		    "yyyy-MM-dd"
 
 		    -- e.g. 12/25/2025 (Confusing Format)
-		    -- "MM/DD/YYYY"
+		    -- "MM/dd/yyyy"
 
 		    -- e.g. 25/12/2025 (European/UK Format)
-		    -- "DD/MM/YYYY"
+		    -- "dd/MM/yyyy"
 
 		    -- e.g. Dec 25, 2025 (Abbreviated Month)
-		    -- "MMM DD, YYYY"
+		    -- "MMM dd, yyyy"
 
 		    -- e.g. Dec 25, 2025 (Abbreviated Month and Year)
-		    -- "MMM DD, 'YY"
+		    -- "MMM dd, 'yy"
 
 		    -- e.g. December 25, 2025 (Full Month Name)
-		    -- "MMMM DD, YYYY"
+		    -- "MMMM dd, yyyy"
 
 		    -- e.g. 25-Dec-2025 (Day-Month-Year with Dashes)
-		    -- "DD-MMM-YYYY"
+		    -- "dd-MMM-yyyy"
 
 		    -- e.g. 25 Dec 2025 (Day Month Year with Spaces)
-		    -- "DD MMM YYYY"
+		    -- "dd MMM yyyy"
 
 		    -- e.g. Thursday, December 25, 2025 (Full Day and Month Names)
-		    -- "DDDD, MMMM DD, YYYY"
+		    -- "dddd, MMMM DD, yyyy"
 
 		    -- e.g. Thu, Dec 25, 2025 (Abbreviated Day Name)
-		    -- "DDD, MMM DD, YYYY"
+		    -- "ddd, MMM DD, yyyy"
 
 		    -- e.g. 25.12.2025 (European Format with Dots)
-		    -- "DD.MM.YYYY"
-		```
+		    -- "dd.MM.yyyy"
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Basic.Months' = ```
+/// Simple function to centralize month formats in a model
+/// Main benefit is that if you want to change it, you only have to do it in one place
+/// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every Month field.
+function 'DaxLib.FormatString.Basic.Months' = 
 
 		// Simple function to centralize month formats in a model.
 		// Main benefit is that if you want to change it, you only have to do it in one place.
 		//
 		// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every Month field.
-		( ) => "YYYY-MM"
+		( ) => "yyyy-MM"
 
 		    -- e.g. Dec 2025 (Abbreviated Month Year)
-		    -- "MMM YYYY"
+		    -- "MMM yyyy"
 
 		    -- e.g. December 2025 (Full Month Name with Year)
-		    -- "MMMM YYYY"
+		    -- "MMMM yyyy"
 
 		    -- e.g. 12/2025 (Numeric Month/Year)
-		    -- "MM/YYYY"
+		    -- "MM/yyyy"
 
 		    -- e.g. 2025/12 (Year/Month for Sorting)
-		    -- "YYYY/MM"
+		    -- "yyyy/MM"
 
 		    -- e.g. 2025 Dec (Year First with Abbreviated Month)
-		    -- "YYYY MMM"
+		    -- "yyyy MMM"
 
 		    -- e.g. 2025 M12 (Year with 'M' Month Indicator)
 		    -- Note: quad-quotes necessary to avoid "M" being interpreted as a month number
-		    -- "YYYY" & """" & "M" & """" & "MM"
+		    -- "yyyy" & """" & "M" & """" & "MM"
 
 		    -- e.g. Dec-25 (Abbreviated Month-Year Short)
-		    -- "MMM-YY"
+		    -- "MMM-yy"
 
 		    -- e.g. 12-2025 (Month-Year with Dash)
-		    -- "MM-YYYY"
+		    -- "MM-yyyy"
 
 		    -- e.g. 2025.12 (Year.Month with Dot)
-		    -- "YYYY.MM"
-		```
+		    -- "yyyy.MM"
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Basic.DateTimes' = ```
+/// Simple function to centralize datetime formats in a model.
+/// Main benefit is that if you want to change it, you only have to do it in one place.
+///
+/// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every DateTime field.
+function 'DaxLib.FormatString.Basic.DateTimes' = 
 
 		// Simple function to centralize datetime formats in a model.
 		// Main benefit is that if you want to change it, you only have to do it in one place.
 		//
 		// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every DateTime field.
-		( ) => "YYYY-MM-DD HH:mm:ss"
+		( ) => "yyyy-MM-dd HH:mm:ss"
 
 		    -- e.g. 12/25/2025 2:30 PM (US Format with 12-hour Time)
-		    -- "MM/DD/YYYY h:mm AM/PM"
+		    -- "MM/dd/yyyy h:mm AM/PM"
 
 		    -- e.g. 25/12/2025 14:30 (European Format with 24-hour Time)
-		    -- "DD/MM/YYYY HH:mm"
+		    -- "dd/MM/yyyy HH:mm"
 
 		    -- e.g. Dec 25, 2025 2:30:45 PM (Abbreviated Month with Full Time)
-		    -- "MMM DD, YYYY h:mm:ss AM/PM"
+		    -- "MMM dd, yyyy h:mm:ss AM/PM"
 
 		    -- e.g. 2025-12-25T14:30:00 (ISO 8601 Standard with T Separator)
-		    -- "YYYY-MM-DD\THH:mm:ss"
+		    -- "yyyy-MM-dd\THH:mm:ss"
 
 		    -- e.g. 25-Dec-2025 14:30 (Day-Month-Year with Time)
-		    -- "DD-MMM-YYYY HH:mm"
+		    -- "dd-MMM-yyyy HH:mm"
 
 		    -- e.g. December 25, 2025 at 2:30 PM (Full Month with "at")
-		    -- "MMMM DD, YYYY \a\t h:mm AM/PM"
+		    -- "MMMM dd, yyyy \a\t h:mm AM/PM"
 
 		    -- e.g. Thu, Dec 25, 2025 14:30:00 (Abbreviated Day with Full Time)
-		    -- "DDD, MMM DD, YYYY HH:mm:ss"
+		    -- "ddd, MMM dd, yyyy HH:mm:ss"
 
 		    -- e.g. 2025-12-25 14:30 (Compact ISO Format)
-		    -- "YYYY-MM-DD HH:mm"
+		    -- "yyyy-MM-dd HH:mm"
 
 		    -- e.g. 12/25 2:30 PM (Short Format without Year)
-		    -- "MM/DD h:mm AM/PM"
-		```
+		    -- "MM/dd h:mm AM/PM"
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
-function 'DaxLib.FormatString.Basic.Quarters' = ```
+/// Simple function to centralize quarter formats in a model.
+/// Main benefit is that if you want to change it, you only have to do it in one place.
+///
+/// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every Quarter field.
+function 'DaxLib.FormatString.Basic.Quarters' = 
 
 		// Simple function to centralize quarter formats in a model.
 		// Main benefit is that if you want to change it, you only have to do it in one place.
 		//
 		// Recommended: Use a Tabular Editor Macro to assign this function to the format string of every Quarter field.
 		( ) =>
-		    -- Note: quad-quotes necessary to avoid "M" being interpreted as a month number
-		    VAR _Q = """""Q"""""
-		    VAR _Qtr = """""Qtr"""""
-		    VAR _FY = """""FY"""""
+		    VAR _Q = "Q"
+		    VAR _Qtr = "Qtr"
+		    VAR _FY = "FY"
+		    VAR _Quarter = QUARTER ( SELECTEDMEASURE () )
 
 		    VAR _Format =
 		        // Replace with one of the other, commented options, below.
 
 		        -- e.g. 2025 Q4 (Year Quarter - Most Common)
-		        "YYYY " & _Q & "Q"
+		        "yyyy " & _Q & _Quarter
 
 		        -- e.g. Q4 2025 (Quarter Year)
-		        -- _Q & "Q YYYY"
+		        -- _Q  & _Quarter & "yyyy"
 
 		        -- e.g. 2025-Q4 (Year-Quarter with Dash)
-		        -- "YYYY-" & _Q & "Q"
+		        -- "yyyy-" & _Q & _Quarter
 
 		        -- e.g. Q4/2025 (Quarter/Year with Slash)
-		        -- _Q & "Q/YYYY"
+		        -- _Q & _Quarter & "/yyyy"
 
 		        -- e.g. 2025 Qtr 4 (Year with "Qtr" Abbreviation)
-		        -- "YYYY " & _Qtr & " Q"
+		        -- "yyyy " & _Qtr & _Quarter
 
 		        -- e.g. FY2025 Q4 (Fiscal Year Quarter)
-		        -- _FY & "YYYY " & _Q & "Q"
+		        -- _FY & "yyyy " & _Q & _Quarter
 
 		        -- e.g. 25 Q4 (Short Year Quarter)
-		        -- "YY " & _Q & "Q"
+		        -- "YY " & _Q & _Quarter
 
 		        -- e.g. 2025Q4 (Compact Format)
-		        -- "YYYY" & _Q & "Q"
+		        -- "yyyy" & _Q & _Quarter
 
 		        -- e.g. Q4-25 (Quarter-Short Year)
-		        -- _Q & "Q-YY"
+		        -- _Q & _Quarter & "-yy"
 
 		        -- e.g. 4Q 2025 (Number Q Year)
-		        -- "Q " & _Q & " YYYY"
+		        --  _Quarter & _Q & " yyyy"
 
 		    RETURN
 		        _Format
-		```
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
+/// Generic number format function with configurable decimal places.
+/// Centralizes number formatting logic for consistency across the model.
+///
+/// Recommended: Use for all numeric measures where decimal precision needs to be standardized.
 function 'DaxLib.FormatString.Basic.Numbers' = 
 
 		// Generic number format function with configurable decimal places.
@@ -956,8 +982,12 @@ function 'DaxLib.FormatString.Basic.Numbers' =
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
+/// Generic number format function with configurable decimal places.
+/// Centralizes number formatting logic for consistency across the model.
+///
+/// Recommended: Use for all numeric measures where decimal precision needs to be standardized.
 function 'DaxLib.FormatString.Basic.Percents' = 
 
 		// Generic number format function with configurable decimal places.
@@ -968,8 +998,12 @@ function 'DaxLib.FormatString.Basic.Percents' =
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
 
+/// Generic number format function with configurable decimal places.
+/// Centralizes number formatting logic for consistency across the model.
+///
+/// Recommended: Use in limited scenarios when you want more optimal control over number rounding than what Power BI provides.
 function 'DaxLib.FormatString.Basic.SmarterRounding' = 
 
 		// Generic number format function with configurable decimal places.
@@ -980,4 +1014,244 @@ function 'DaxLib.FormatString.Basic.SmarterRounding' =
 
 	annotation DAXLIB_PackageId = DaxLib.FormatString
 
-	annotation DAXLIB_PackageVersion = 0.1.1
+	annotation DAXLIB_PackageVersion = 0.1.2
+
+/// Format file sizes with automatic unit detection
+/// Returns human-readable format like "1.2 GB", "512 MB", "2.3 KB"
+function 'DaxLib.FormatString.Basic.FileSize' = 
+
+		// Format file sizes with automatic unit detection
+		// Returns human-readable format like "1.2 GB", "512 MB", "2.3 KB"
+		() =>
+		    VAR _Bytes = ABS( SELECTEDMEASURE () )
+
+		    VAR _Unit =
+		        SWITCH (
+		            TRUE (),
+		            _Bytes >= 1099511627776, " TB",
+		            _Bytes >= 1073741824, " GB",
+		            _Bytes >= 1048576, " MB",
+		            _Bytes >= 1024, " KB",
+		            " bytes"
+		        )
+
+		    VAR _Value =
+		        SWITCH (
+		            TRUE (),
+		            _Bytes >= 1099511627776, _Bytes / 1099511627776,
+		            _Bytes >= 1073741824, _Bytes / 1073741824,
+		            _Bytes >= 1048576, _Bytes / 1048576,
+		            _Bytes >= 1024, _Bytes / 1024,
+		            _Bytes
+		        )
+
+		    VAR _Decimals =
+		        IF ( _Unit = " bytes", 0, 1 )
+
+		    VAR _FormatString =
+		        IF ( _Decimals = 0, "#,##0", "#,##0.0" )
+
+		    VAR _Result =
+		        -- Avoids values or units being interpreted as part of the format string
+		        DaxLib.FormatString.Component.MakeStringSafe(
+		            FORMAT ( _Value, _FormatString ) & _Unit
+		        )
+
+		    RETURN
+		        _Result
+
+	annotation DAXLIB_PackageId = DaxLib.FormatString
+
+	annotation DAXLIB_PackageVersion = 0.1.2
+
+/// Format temperature values with unit symbols
+/// Returns formatted temperature like "23.5°C", "75°F"
+///
+/// WARNING: Doesn't convert units
+function 'DaxLib.FormatString.Basic.Temperature' = 
+
+		// Format temperature values with unit symbols
+		// Returns formatted temperature like "23.5°C", "75°F"
+		//
+		// WARNING: Doesn't convert units
+		(
+		    // Temperature unit: "C" for Celsius, "F" for Fahrenheit
+		    unit: STRING,
+
+		    // Number of decimal places (0-2)
+		    decimal_places: INT64
+		) =>
+		    VAR _Unit =
+		        SWITCH (
+		            UPPER( unit ),
+		            "C", "°C",
+		            "F", "°F",
+		            "°"
+		        )
+
+		    VAR _Format =
+		        DaxLib.FormatString.Component.DecimalPlaces (
+		            "#,##0",
+		            decimal_places
+		        )
+		        & " " & _Unit
+
+		    RETURN
+		        _Format
+
+	annotation DAXLIB_PackageId = DaxLib.FormatString
+
+	annotation DAXLIB_PackageVersion = 0.1.2
+
+/// Convert numbers to ordinal format
+/// Returns ordinal numbers like "1st", "2nd", "3rd", "21st"
+function 'DaxLib.FormatString.Basic.Ordinals' = 
+
+		// Convert numbers to ordinal format
+		// Returns ordinal numbers like "1st", "2nd", "3rd", "21st"
+		() =>
+		    VAR _Num = ABS( SELECTEDMEASURE () )
+		    VAR _LastDigit = MOD( _Num, 10 )
+		    VAR _LastTwoDigits = MOD( _Num, 100 )
+
+		    VAR _Suffix =
+		        SWITCH (
+		            TRUE (),
+		            _LastTwoDigits >= 11 && _LastTwoDigits <= 13, "th",
+		            _LastDigit = 1, "st",
+		            _LastDigit = 2, "nd",
+		            _LastDigit = 3, "rd",
+		            "th"
+		        )
+
+		    RETURN
+		       "#,##0" & _Suffix
+
+	annotation DAXLIB_PackageId = DaxLib.FormatString
+
+	annotation DAXLIB_PackageVersion = 0.1.2
+
+/// Format numbers in scientific notation
+/// Returns scientific notation like "1.23E+06", "4.56E-03"
+function 'DaxLib.FormatString.Basic.Scientific' = 
+
+		// Format numbers in scientific notation
+		// Returns scientific notation like "1.23E+06", "4.56E-03"
+		(
+		    // Number of decimal places (1-15)
+		    decimal_places: INT64
+		) =>
+		    VAR _Decimals = MAX( 1, MIN( decimal_places, 15 ) )
+		    VAR _Notation = "0." & REPT( "0", _Decimals ) & "E+00"
+		    VAR _Format =
+		        DaxLib.FormatString.Component.MakeStringSafe (
+		            FORMAT( SELECTEDMEASURE (), _Notation )
+		        )
+
+		    RETURN
+		        _Format
+
+	annotation DAXLIB_PackageId = DaxLib.FormatString
+
+	annotation DAXLIB_PackageVersion = 0.1.2
+
+/// Handle pluralization based on count values
+/// Returns singular or plural forms like "1 item" vs "2 items"
+function 'DaxLib.FormatString.Component.Pluralization' = 
+
+		// Handle pluralization based on count values
+		// Returns singular or plural forms like "1 item" vs "2 items"
+		(
+		    // Count value
+		    count_reference: NUMERIC,
+
+		    // Singular form (e.g., "item")
+		    singular: STRING,
+
+		    // Plural form (e.g., "items")
+		    plural: STRING
+		) =>
+		    VAR _Word = IF( ABS( count_reference ) = 1, singular, plural )
+
+		    RETURN
+		        FORMAT( count_reference, "#,##0" ) & " " & _Word
+
+	annotation DAXLIB_PackageId = DaxLib.FormatString
+
+	annotation DAXLIB_PackageVersion = 0.1.2
+
+/// Convert decimals to simple fractions
+/// Returns fractions like "1/2", "3/4", "2 1/3"
+function 'DaxLib.FormatString.Basic.Fractions' = 
+
+		// Convert decimals to simple fractions
+		// Returns fractions like "1/2", "3/4", "2 1/3"
+		() =>
+		    VAR _WholeNumber = INT( SELECTEDMEASURE () )
+		    VAR _DecimalPart = SELECTEDMEASURE () - _WholeNumber
+
+		    VAR _CommonFractions =
+		        SWITCH (
+		            TRUE (),
+		            ABS( _DecimalPart - 0.5 ) < 0.01, "1/2",
+		            ABS( _DecimalPart - 0.25 ) < 0.01, "1/4",
+		            ABS( _DecimalPart - 0.75 ) < 0.01, "3/4",
+		            ABS( _DecimalPart - 0.33333 ) < 0.01, "1/3",
+		            ABS( _DecimalPart - 0.66667 ) < 0.01, "2/3",
+		            ABS( _DecimalPart - 0.125 ) < 0.01, "1/8",
+		            ABS( _DecimalPart - 0.375 ) < 0.01, "3/8",
+		            ABS( _DecimalPart - 0.625 ) < 0.01, "5/8",
+		            ABS( _DecimalPart - 0.875 ) < 0.01, "7/8",
+		            FORMAT( _DecimalPart, "0.00" )
+		        )
+
+		    RETURN
+		        IF ( _WholeNumber = 0,
+		            _CommonFractions,
+		            FORMAT( _WholeNumber, "#,##0" ) &
+		            IF ( _DecimalPart <> 0, " " & _CommonFractions, "" )
+		        )
+
+	annotation DAXLIB_PackageId = DaxLib.FormatString
+
+	annotation DAXLIB_PackageVersion = 0.1.2
+
+/// Convert numbers to Roman numerals
+/// Returns Roman numerals like "I", "II", "III", "IV", "V", "X", "L", "C", "M"
+function 'DaxLib.FormatString.Basic.RomanNumerals' = 
+
+		// Convert numbers to Roman numerals
+		// Returns Roman numerals like "I", "II", "III", "IV", "V", "X", "L", "C", "M"
+		() =>
+		    VAR _Num = MAX( 1, MIN( 3999, ABS( SELECTEDMEASURE () ) ) )
+
+		    VAR _Thousands = INT( _Num / 1000 )
+		    VAR _Hundreds = INT( MOD( _Num, 1000 ) / 100 )
+		    VAR _Tens = INT( MOD( _Num, 100 ) / 10 )
+		    VAR _Ones = MOD( _Num, 10 )
+
+		    VAR _ThousandsRoman = REPT( "M", _Thousands )
+
+		    VAR _HundredsRoman =
+		        SWITCH ( _Hundreds, 1, "C", 2, "CC", 3, "CCC", 4, "CD", 5, "D", 6, "DC", 7, "DCC", 8, "DCCC", 9, "CM", "" )
+
+		    VAR _TensRoman =
+		        SWITCH ( _Tens, 1, "X", 2, "XX", 3, "XXX", 4, "XL", 5, "L", 6, "LX", 7, "LXX", 8, "LXXX", 9, "XC", "" )
+
+		    VAR _OnesRoman =
+		        SWITCH ( _Ones, 1, "I", 2, "II", 3, "III", 4, "IV", 5, "V", 6, "VI", 7, "VII", 8, "VIII", 9, "IX", "" )
+
+		    VAR _FormatString =
+		        DaxLib.FormatString.Component.MakeStringSafe (
+		            _ThousandsRoman &
+		            _HundredsRoman &
+		            _TensRoman &
+		            _OnesRoman
+		        )
+
+		    RETURN
+		        _FormatString
+
+	annotation DAXLIB_PackageId = DaxLib.FormatString
+
+	annotation DAXLIB_PackageVersion = 0.1.2
